@@ -1,0 +1,35 @@
+
+
+//request the route
+
+GET http://localhost:3004
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDE3MjY5NDMsImV4cCI6MTY0MTcyNjk3MywiYXVkIjoiNjFkYWMyMTFjMTQ5YzM5OTUxOWNkNDYyIiwiaXNzIjoiZ29vZ2xlLmNvbSJ9.ft0Z560IrAiHu3qKtjKR44Oq5pAB8RVquZqg_AQ37-s
+
+
+
+
+###
+POST  http://localhost:3004/auth/login
+Content-Type :application/json
+
+{
+    "email" : "mmm@gmail.com",
+    "password" : "123dfdf456789"
+}
+
+###
+POST  http://localhost:3004/auth/register
+Content-Type :application/json
+
+{
+    "email" : "mmm@gmail.com",
+    "password" : "123dfdf456789"
+}
+
+###
+POST  http://localhost:3004/auth/refresh-token
+###
+DELETE  http://localhost:3004/auth/logout
+
+
+

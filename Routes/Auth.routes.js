@@ -4,7 +4,8 @@ const createErrors = require('http-errors')
 const User = require('../models/user.model')
 const routes = express.Router()
 const {authSchema} = require('../helper/validation_schema')
-const { siginAccessToken} = require('../helper/jwt_helper')
+const { siginAccessToken,signRefreshToken,verfyRefreshToken} = require('../helper/jwt_helper')
+
 const user = require('../models/user.model')
 
 
@@ -27,9 +28,12 @@ routes.post('/register',async(req,res,next)=>{
 
 
             const accessToken = await siginAccessToken(savedUser.id)
+            const refreshToken  = await signRefreshToken(savedUser.id)
 
 
-            res.send({accessToken})
+
+
+            res.send({accessToken,refreshToken})
 
     } catch (error) {
         if(error.isJoi ==true) error.status = 422
@@ -54,10 +58,12 @@ routes.post('/login',async(req,res,next)=>{
 
          const access_token = await siginAccessToken(user.id)
 
+         const refreshToken = await signRefreshToken(user.id)
+
          console.log(access_token)
          
 
-         res.send({ access_token})
+         res.send({ access_token,refreshToken})
         
     } catch (error) {
         if(error.isJoi == true) return next(createErrors.BadRequest("Invalid Username or password"))
@@ -67,7 +73,19 @@ routes.post('/login',async(req,res,next)=>{
 })
 
 routes.post('/refresh-token',async(req,res,next)=>{
-    res.send("refresh-token routes..")
+   try {
+       const {refreshToken} = req.body
+       if (!refreshToken) throw createErrors.BadRequest()
+
+       const userid = await  verfyRefreshToken(refreshToken)
+
+       const accessToken = await siginAccessToken(userid)
+       const refhToken = await signRefreshToken(userid)
+
+       res.send({accessToken : accessToken ,refreshToken :refhToken})
+   } catch (error) {
+       next(error)
+   }
 })
 
 routes.delete('/logout',async(req,res,next)=>{
